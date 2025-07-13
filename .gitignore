@@ -1,0 +1,13 @@
+ 
+# Ignore .env file to keep sensitive data private
+.env
+
+# Ignore node_modules folder
+node_modules/
+
+# Ignore logs
+*.log
+
+# Ignore IDE files (optional)
+.DS_Store
+.vscode/
