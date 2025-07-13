@@ -1,13 +1,25 @@
- 
-# Ignore .env file to keep sensitive data private
+# Environment files
 .env
 
-# Ignore node_modules folder
+# Node modules
 node_modules/
 
-# Ignore logs
+# Log files
 *.log
 
-# Ignore IDE files (optional)
+# IntelliJ project settings
+.idea/
+
+# macOS system junk (if anyone uses macOS)
 .DS_Store
+
+# Windows system junk
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Optional: VS Code junk (if teammates use VS Code)
 .vscode/
+
