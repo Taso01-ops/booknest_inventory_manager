@@ -1,21 +1,54 @@
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config(); // Load env
+const express = require('express');
+const cors = require('cors');
+const db = require('./db'); // use existing db.js
 
-const mysql = require('mysql2');
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-const db = mysql.createConnection({ //Database connection
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+//----------------------------------------------------------------
+
+app.get('/books/search/:title', (req, res) => { //Provided search function
+  const title = req.params.title;
+  const sql = "SELECT * FROM books WHERE Title LIKE ?";
+  db.query(sql, [`%${title}%`], (err, results) => {
+    if (err) return res.status(500).json(err);
+    return res.json(results);
+  });
 });
 
-db.connect(err => {
-  if (err) {
-    console.error('Failed!!', err.stack); //ERROR
-    return;
-  }
-  console.log('Connected'); //APPROVED
+//----------------------------------------------------------------
+
+app.post('/books', (req, res) => { //Post function to create a book
+  const { isbn, title, price, publication_year, stock, category } = req.body;
+
+  const sql = `
+    INSERT INTO books (ISBN, Title, Price, Publication_Year, Stock, Category)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  const values = [isbn, title, price, publication_year, stock, category];
+
+  db.query(sql, values, (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.status(201).json({ message: 'Book added successfully', bookId: result.insertId });
+  });
 });
 
-module.exports = db; //export for use in API
+//----------------------------------------------------------------
 
+app.get('/books', (req, res) => { //Read function to list all books
+  const sql = 'SELECT * FROM books';
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json(results);
+  });
+});
+
+//----------------------------------------------------------------
+
+const PORT = process.env.PORT || 3001; //Starting server
+app.listen(PORT, () => {
+  console.log(`📦 Server is running on port ${PORT}`);
+});
