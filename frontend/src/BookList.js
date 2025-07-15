@@ -2,6 +2,8 @@ import React from 'react';
 import DeleteButton from './DeleteButton';
 import axios from 'axios';
 
+
+<BookList books={books} setBooks={setBooks} onEdit={setEditingBook} />
 const BookList = ({ books, setBooks }) => {
   const handleDelete = (id) => {
     axios
@@ -16,17 +18,15 @@ const BookList = ({ books, setBooks }) => {
   };
 
   return (
-    <div>
-      <h2>Book List</h2>
-      <ul>
-        {books.map((book) => (
-          <li key={book.id}>
-            {book.title} ({book.isbn}) - ${book.price}
-            <DeleteButton onDelete={() => handleDelete(book.id)} />
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul>
+      {books.map((book) => (
+        <li key={book.id}>
+          {book.title} ({book.isbn}) - ${book.price}
+          <DeleteButton onDelete={() => handleDelete(book.id)} />
+          <button onClick={() => onEdit(book)}>Edit</button>
+        </li>
+      ))}
+    </ul>
   );
 };
 
