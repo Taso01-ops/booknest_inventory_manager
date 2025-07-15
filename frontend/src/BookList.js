@@ -35,9 +35,9 @@ const BookList = ({ books, setBooks }) => {
       <h2>Book List</h2>
       <ul>
         {books.map((book) => (
-          <li key={book.OrderID}>
-            {book.Title} ({book.ISBN}) - ${book.Price}
-            <DeleteButton onDelete={() => handleDelete(book.OrderID)} />
+          <li key={book.id}>
+            {book.title} ({book.isbn}) - ${book.price}
+            <DeleteButton onDelete={() => handleDelete(book.id)} />
           </li>
         ))}
       </ul>
