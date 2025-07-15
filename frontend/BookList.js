@@ -1,33 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
-import DeleteButton from './DeleteButton'; // We'll create this next
 
-const BookList = () => {
-  const [books, setBooks] = useState([]);
-
-  // Fetch books on component mount
+const BookList = ({ books, setBooks }) => {
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/books');
-        setBooks(response.data);
-      } catch (error) {
-        console.error('Error fetching books:', error);
-      }
-    };
-    fetchBooks();
-  }, []);
+    axios.get('http://localhost:3001/books')
+      .then((res) => setBooks(res.data))
+      .catch((err) => console.error('Failed to load books:', err));
+  }, [setBooks]);
 
-  // Handle delete book
-  const handleDelete = (id) => {
-    axios
-      .delete(`http://localhost:3001/books/${id}`)
-      .then(() => {
-        setBooks(books.filter((book) => book.OrderID !== id)); // Remove deleted book from state
-      })
-      .catch((error) => {
-        console.error('Error deleting book:', error);
-      });
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/books/${id}`);
+      setBooks(books.filter(book => book.OrderID !== id));
+    } catch (err) {
+      console.error('Delete failed:', err);
+    }
   };
 
   return (
@@ -36,8 +23,8 @@ const BookList = () => {
       <ul>
         {books.map((book) => (
           <li key={book.OrderID}>
-            {book.Title} ({book.ISBN}) - ${book.Price}
-            <DeleteButton onDelete={() => handleDelete(book.OrderID)} />
+            {book.Title} — ${book.Price}
+            <button onClick={() => handleDelete(book.OrderID)}>Delete</button>
           </li>
         ))}
       </ul>
@@ -46,3 +33,4 @@ const BookList = () => {
 };
 
 export default BookList;
+
