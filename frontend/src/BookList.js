@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DeleteButton from './DeleteButton'; // We'll create this next
 
-const BookList = () => {
+const BookList = ({ books, setBooks }) => {
   const [books, setBooks] = useState([]);
 
   // Fetch books on component mount
