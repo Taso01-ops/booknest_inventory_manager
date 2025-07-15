@@ -42,4 +42,4 @@ function UpdateBook({ book, onSuccess }) {
   );
 }
 
-export default updateBook;
+export default UpdateBook;
