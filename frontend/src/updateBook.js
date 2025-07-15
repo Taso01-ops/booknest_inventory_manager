@@ -25,6 +25,16 @@ function UpdateBook({ book, onSuccess }) {
       });
   };
 
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this book?')) {
+      axios.delete(`http://localhost:3001/books/${book.id}`)
+        .then(() => {
+          alert('Book deleted');
+          onSuccess?.();
+        });
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       {['title', 'author_name', 'price', 'stock'].map(field => (
@@ -38,6 +48,9 @@ function UpdateBook({ book, onSuccess }) {
         />
       ))}
       <button type="submit">Update Book</button>
+      <button type="button" onClick={handleDelete} style={{ marginLeft: '10px', backgroundColor: 'red', color: 'white' }}>
+        Delete Book
+      </button>
     </form>
   );
 }
