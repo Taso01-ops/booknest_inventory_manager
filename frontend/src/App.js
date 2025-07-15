@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import BookList from './BookList';
 import SearchBar from './SearchBar';
-import AddBook from './AddBook';
-import UpdateBook from './UpdateBook'; //Deletion included in this
+import AddBook from './addBook';
+import UpdateBook from './updateBook'; //Deletion included in this
 
 const App = () => {
   const [books, setBooks] = useState([]);
