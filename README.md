@@ -3,7 +3,12 @@ University Assignment
 Full-stack project using React (frontend), Node.js + Express (backend), and MySQL (via phpMyAdmin).
 
 ## Features
-CRUD operations. Also search!
+Create a new book
+Read all books
+Update book details
+Delete a book
+Search books by title
+
 
 ## Tech Stack
 - Frontend: React
