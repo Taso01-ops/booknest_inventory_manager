@@ -1,27 +1,20 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 
-const SearchBar = ({ setBooks }) => {
-  const [query, setQuery] = useState('');
-
-  const handleSearch = async () => {
-    try {
-      const res = await axios.get(`http://localhost:3001/books/search/${query}`);
-      setBooks(res.data);
-    } catch (err) {
-      console.error('Search failed:', err);
-    }
+const SearchBar = ({ searchTerm, setSearchTerm, handleSearch }) => {
+  const handleInputChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    handleSearch(term);  // Call the handleSearch function passed down from the parent
   };
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Search by title..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+      <input 
+        type="text" 
+        value={searchTerm} 
+        onChange={handleInputChange} 
+        placeholder="Search by book title..." 
       />
-      <button onClick={handleSearch}>Search</button>
     </div>
   );
 };
