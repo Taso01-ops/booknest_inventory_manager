@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import BookList from './BookList';
+import SearchBar from './SearchBar';
 
-function App() {
+const App = () => {
+  const [books, setBooks] = useState([]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Book Inventory</h1>
+      <SearchBar setBooks={setBooks} />
+      <BookList books={books} setBooks={setBooks} />
     </div>
   );
-}
+};
 
 export default App;
