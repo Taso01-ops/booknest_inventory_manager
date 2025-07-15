@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function editBook({ book, onSuccess }) {
+function EditBook({ book, onSuccess }) {
   const [form, setForm] = useState(book);
 
   useEffect(() => { setForm(book); }, [book]);
@@ -27,4 +27,4 @@ function editBook({ book, onSuccess }) {
   );
 }
 
-export default editBook;
+export default EditBook;
