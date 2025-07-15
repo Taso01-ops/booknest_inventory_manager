@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function addBook({ onSuccess }) {
+function AddBook({ onSuccess }) {
   const [book, setBook] = useState({
     title: '', author_name: '', price: '', stock: '', isbn: '', publication_year: '', category: ''
   });
