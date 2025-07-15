@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import BookList from './BookList';  // Ensure proper import of BookList
 import SearchBar from './SearchBar';  // Ensure proper import of SearchBar
-import AddBook from './AddBook';  // Corrected import to match file name convention
-import UpdateBook from './UpdateBook';  // Corrected import to match file name convention
+import AddBook from './addBook';  // Corrected import to match file name convention
+import UpdateBook from './updateBook';  // Corrected import to match file name convention
 
 const App = () => {
   const [books, setBooks] = useState([]);
