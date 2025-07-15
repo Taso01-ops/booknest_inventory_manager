@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function updateBook({ book, onSuccess }) {
+function UpdateBook({ book, onSuccess }) {
   const [form, setForm] = useState({
     title: '', author_name: '', price: '', stock: ''
   });
