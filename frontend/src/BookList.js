@@ -2,7 +2,7 @@ import React from 'react';
 import DeleteButton from './DeleteButton';
 import axios from 'axios';
 
-const BookList = ({ books, setBooks }) => {
+const BookList = ({ books, setBooks, onEdit }) => {  // Add onEdit as a prop
   const handleDelete = (id) => {
     axios
       .delete(`http://localhost:3001/books/${id}`)
@@ -21,7 +21,7 @@ const BookList = ({ books, setBooks }) => {
         <li key={book.id}>
           {book.title} ({book.isbn}) - ${book.price}
           <DeleteButton onDelete={() => handleDelete(book.id)} />
-          <button onClick={() => onEdit(book)}>Edit</button>
+          <button onClick={() => onEdit(book)}>Edit</button>  {/* Use onEdit prop */}
         </li>
       ))}
     </ul>
@@ -29,4 +29,5 @@ const BookList = ({ books, setBooks }) => {
 };
 
 export default BookList;
+
 
