@@ -2,8 +2,6 @@ import React from 'react';
 import DeleteButton from './DeleteButton';
 import axios from 'axios';
 
-
-<BookList books={books} setBooks={setBooks} onEdit={setEditingBook} />
 const BookList = ({ books, setBooks }) => {
   const handleDelete = (id) => {
     axios
