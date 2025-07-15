@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import BookList from '../BookList';
-import SearchBar from '../SearchBar';
+import BookList from './BookList';
+import SearchBar from './SearchBar';
 
 const App = () => {
   const [books, setBooks] = useState([]);
