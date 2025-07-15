@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const SearchBar = ({ setBooks }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [query, setQuery] = useState('');
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/books/search/${searchTerm}`);
-      setBooks(response.data); // Update the parent component with search results
-    } catch (error) {
-      console.error('Error searching books:', error);
+      const res = await axios.get(`http://localhost:3001/books/search/${query}`);
+      setBooks(res.data);
+    } catch (err) {
+      console.error('Search failed:', err);
     }
   };
 
@@ -17,9 +17,9 @@ const SearchBar = ({ setBooks }) => {
     <div>
       <input
         type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search by title"
+        placeholder="Search by title..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
       />
       <button onClick={handleSearch}>Search</button>
     </div>
