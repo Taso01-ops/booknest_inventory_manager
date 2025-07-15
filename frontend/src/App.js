@@ -4,6 +4,8 @@ import SearchBar from './SearchBar';
 import AddBook from './AddBook'; // If you plan to use this
 import axios from 'axios';
 
+const [editingBook, setEditingBook] = useState(null);
+
 const App = () => {
   const [books, setBooks] = useState([]);
 
