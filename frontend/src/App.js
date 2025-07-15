@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import BookList from './BookList';
 import SearchBar from './SearchBar';
-import AddBook from './AddBook'; // If you plan to use this
-import axios from 'axios';
-
-const [editingBook, setEditingBook] = useState(null);
+import AddBook from './AddBook';
+import UpdateBook from './UpdateBook'; //Deletion included in this
 
 const App = () => {
   const [books, setBooks] = useState([]);
+  const [editingBook, setEditingBook] = useState(null);
 
   const fetchBooks = async () => {
     try {
@@ -26,8 +26,21 @@ const App = () => {
     <div>
       <h1>Book Inventory</h1>
       <SearchBar setBooks={setBooks} />
-      <BookList books={books} setBooks={setBooks} />
+      <BookList books={books} setBooks={setBooks} onEdit={setEditingBook} />
       <AddBook onSuccess={fetchBooks} />
+      
+      {editingBook && (
+        <div>
+          <UpdateBook
+            book={editingBook}
+            onSuccess={() => {
+              setEditingBook(null);
+              fetchBooks();
+            }}
+          />
+          <button onClick={() => setEditingBook(null)}>Cancel Edit</button>
+        </div>
+      )}
     </div>
   );
 };
