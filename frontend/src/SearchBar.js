@@ -6,8 +6,10 @@ const SearchBar = ({ setBooks }) => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:3001/books/search/${searchTerm}`);
-      setBooks(response.data); // Update the parent component with search results
+      const response = await axios.get('http://localhost:3001/books/search', {
+        params: { title: searchTerm }
+      });
+      setBooks(response.data);
     } catch (error) {
       console.error('Error searching books:', error);
     }
@@ -19,6 +21,7 @@ const SearchBar = ({ setBooks }) => {
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         placeholder="Search by title"
       />
       <button onClick={handleSearch}>Search</button>
@@ -27,4 +30,3 @@ const SearchBar = ({ setBooks }) => {
 };
 
 export default SearchBar;
-
