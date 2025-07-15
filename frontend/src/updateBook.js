@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import DeleteButton from './DeleteButton'; // Import the DeleteButton component
 
 function UpdateBook({ book, onSuccess }) {
   const [form, setForm] = useState({
@@ -48,11 +49,12 @@ function UpdateBook({ book, onSuccess }) {
         />
       ))}
       <button type="submit">Update Book</button>
-      <button type="button" onClick={handleDelete} style={{ marginLeft: '10px', backgroundColor: 'red', color: 'white' }}>
-        Delete Book
-      </button>
+
+      {/* Using DeleteButton here */}
+      <DeleteButton onDelete={handleDelete} />
     </form>
   );
 }
 
 export default UpdateBook;
+
