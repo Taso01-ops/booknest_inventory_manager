@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import BookList from './BookList';
 import SearchBar from './SearchBar';
+import DeleteButton from './DeleteButton';
 
 const App = () => {
   const [books, setBooks] = useState([]);
