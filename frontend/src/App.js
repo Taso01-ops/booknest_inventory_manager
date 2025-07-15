@@ -3,7 +3,7 @@ import axios from 'axios';
 import BookList from './BookList';
 import SearchBar from './SearchBar';
 import AddBook from './addBook';
-import UpdateBook from './updateBook'; //Deletion included in this
+import UpdateBook from './updateBook';
 
 const App = () => {
   const [books, setBooks] = useState([]);
@@ -12,6 +12,7 @@ const App = () => {
   const fetchBooks = async () => {
     try {
       const res = await axios.get('http://localhost:3001/books');
+      console.log(res.data); // Log to check if data is returned
       setBooks(res.data);
     } catch (err) {
       console.error('Failed to fetch books', err);
@@ -28,7 +29,7 @@ const App = () => {
       <SearchBar setBooks={setBooks} />
       <BookList books={books} setBooks={setBooks} onEdit={setEditingBook} />
       <AddBook onSuccess={fetchBooks} />
-      
+
       {editingBook && (
         <div>
           <UpdateBook
