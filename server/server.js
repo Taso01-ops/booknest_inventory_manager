@@ -2,21 +2,12 @@ require('dotenv').config(); // Load env
 const express = require('express');
 const cors = require('cors');
 const db = require('./db'); // use existing db.js
+const titleSearch = require('./titleSearch');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-//----------------------------------------------------------------
-
-app.get('/books/search/:title', (req, res) => { //Provided search function
-  const title = req.params.title;
-  const sql = "SELECT * FROM books WHERE Title LIKE ?";
-  db.query(sql, [`%${title}%`], (err, results) => {
-    if (err) return res.status(500).json(err);
-    return res.json(results);
-  });
-});
+app.use(titleSearch); // register the routes from titleSearch.js
 
 //----------------------------------------------------------------
 
