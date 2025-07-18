@@ -52,3 +52,29 @@ const PORT = process.env.PORT || 3001; //Starting server
 app.listen(PORT, () => {
   console.log(`📦 Server is running on port ${PORT}`);
 });
+
+//----------------------------------------------------------------
+
+app.delete('/books/:id', (req, res) => {
+  const sql = "DELETE FROM books WHERE id = ?";
+  db.query(sql, [req.params.id], (err) => {
+    if (err) return res.status(500).json(err);
+    return res.json({ message: "Book deleted" });
+  });
+});
+
+//----------------------------------------------------------------
+
+app.put('/books/:id', (req, res) => {
+  const { title, author_name, price, stock } = req.body;
+  const sql = `
+    UPDATE books SET Title = ?, Author_Name = ?, Price = ?, Stock = ? WHERE id = ?
+  `;
+  const values = [title, author_name, price, stock, req.params.id];
+
+  db.query(sql, values, (err) => {
+    if (err) return res.status(500).json(err);
+    return res.json({ message: "Book updated" });
+  });
+});
+
