@@ -38,7 +38,7 @@ function UpdateBook({ book, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      {['title', 'author_name', 'price', 'stock'].map(field => (
+      {['title','price', 'stock'].map(field => (
         <input
           key={field}
           name={field}
