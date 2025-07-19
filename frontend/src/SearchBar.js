@@ -4,16 +4,18 @@ import axios from 'axios';
 const SearchBar = ({ setBooks }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/books/search', {
-        params: { title: searchTerm }
-      });
-      setBooks(response.data);
-    } catch (error) {
-      console.error('Error searching books:', error);
-    }
-  };
+const handleSearch = async () => {
+  try {
+    const response = await axios.get('http://localhost:3001/books/search', {
+      params: { title: searchTerm }
+    });
+    console.log("Search Results:", response.data); //Log to detect issues
+    setBooks(response.data);
+  } catch (error) {
+    console.error('Error searching books:', error);
+  }
+};
+
 
   return (
     <div>
