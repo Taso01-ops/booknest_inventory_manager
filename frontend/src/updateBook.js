@@ -4,7 +4,7 @@ import DeleteButton from './DeleteButton'; // Import the DeleteButton component
 
 function UpdateBook({ book, onSuccess }) {
   const [form, setForm] = useState({
-    title: '', author_name: '', price: '', stock: ''
+    title: '', price: '', stock: ''
   });
 
   useEffect(() => {
@@ -38,7 +38,7 @@ function UpdateBook({ book, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      {['title', 'author_name', 'price', 'stock'].map(field => (
+      {['title', 'price', 'stock'].map(field => (
         <input
           key={field}
           name={field}
