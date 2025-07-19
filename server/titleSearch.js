@@ -8,7 +8,7 @@ router.get('/books/search', (req, res) => {
 
   if (!title) return res.status(400).json({ error: 'Missing title query' });
 
-  const sql = "SELECT * FROM books WHERE LOWER(Title) LIKE LOWER(?)";
+  const sql = "SELECT * FROM books WHERE LOWER(title) LIKE LOWER(?)";
   db.query(sql, [`%${title}%`], (err, results) => {
     if (err) return res.status(500).json(err);
     return res.json(results);
