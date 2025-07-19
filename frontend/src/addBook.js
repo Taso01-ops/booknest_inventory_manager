@@ -1,4 +1,3 @@
-// add book.js
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -17,21 +16,15 @@ function AddBook({ onSuccess }) {
     });
   };
 
-return (
-  <form onSubmit={handleSubmit}>
-    {['title', 'isbn', 'price', 'publication_year', 'stock', 'category'].map(field => (
-      <input
-        key={field}
-        name={field}
-        placeholder={field}
-        value={book[field]}
-        onChange={handleChange}
-        required
-      />
-    ))}
-    <button type="submit">Add Book</button>
-  </form>
-);
+  return (
+    <form onSubmit={handleSubmit}>
+      {['title', 'price', 'stock', 'isbn', 'publication_year', 'category'].map(field => (
+        <input key={field} name={field} placeholder={field} onChange={handleChange} required />
+      ))}
+      <button type="submit">Add Book</button>
+    </form>
+  );
 }
 
 export default AddBook;
+
