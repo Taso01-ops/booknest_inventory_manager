@@ -57,11 +57,11 @@ app.delete('/books/:id', (req, res) => {
 //----------------------------------------------------------------
 
 app.put('/books/:id', (req, res) => {
-  const { title, author_name, price, stock } = req.body;
+  const { title, price, stock } = req.body;
   const sql = `
-    UPDATE books SET Title = ?, Author_Name = ?, Price = ?, Stock = ? WHERE id = ?
+    UPDATE books SET Title = ?, Price = ?, Stock = ? WHERE id = ?
   `;
-  const values = [title, author_name, price, stock, req.params.id];
+  const values = [title, price, stock, req.params.id];
 
   db.query(sql, values, (err) => {
     if (err) return res.status(500).json(err);
