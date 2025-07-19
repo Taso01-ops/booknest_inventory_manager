@@ -19,7 +19,7 @@ function EditBook({ book, onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      {['title', 'author_name', 'price', 'stock'].map(field => (
+      {['title', 'price', 'stock'].map(field => (
         <input key={field} name={field} value={form[field]} onChange={handleChange} required />
       ))}
       <button type="submit">Save</button>
