@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function AddBook({ onSuccess }) {
   const [book, setBook] = useState({
-    title: '', author_name: '', price: '', stock: '', isbn: '', publication_year: '', category: ''
+    title: '', price: '', stock: '', isbn: '', publication_year: '', category: ''
   });
 
   const handleChange = (e) => setBook({ ...book, [e.target.name]: e.target.value });
@@ -19,7 +19,7 @@ function AddBook({ onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      {['title', 'author_name', 'price', 'stock'].map(field => (
+      {['title', 'price', 'stock'].map(field => (
         <input key={field} name={field} placeholder={field} onChange={handleChange} required />
       ))}
       <button type="submit">Add Book</button>
