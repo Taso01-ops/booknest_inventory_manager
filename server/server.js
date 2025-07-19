@@ -15,7 +15,7 @@ app.post('/books', (req, res) => { //Post function to create a book
   const { isbn, title, price, publication_year, stock, category } = req.body;
 
   const sql = `
-    INSERT INTO books (ISBN, Title, Price, Publication_Year, Stock, Category)
+    INSERT INTO books (isbn, title, price, publication_year, stock, category)
     VALUES (?, ?, ?, ?, ?, ?)
   `;
 
@@ -59,7 +59,7 @@ app.delete('/books/:id', (req, res) => {
 app.put('/books/:id', (req, res) => {
   const { title, price, stock } = req.body;
   const sql = `
-    UPDATE books SET Title = ?, Price = ?, Stock = ? WHERE id = ?
+    UPDATE books SET title = ?, price = ?, stock = ? WHERE id = ?
   `;
   const values = [title, price, stock, req.params.id];
 
