@@ -1,26 +1,21 @@
-require('dotenv').config(); // Load env
+require('dotenv').config(); // Load env variables
+
 const express = require('express');
 const cors = require('cors');
-const db = require('./db'); // use existing db.js
-const titleSearch = require('./titleSearch');
-
 const app = express();
+const db = require('./db'); // DB connection
+const titleSearch = require('./titleSearch');
+const authRoutes = require('./routes/auth'); 
 app.use(cors());
 app.use(express.json());
-app.use(titleSearch); // register the routes from titleSearch.js
-require('dotenv').config();
-const authRoutes = require('./routes/auth');
+app.use(titleSearch);           
+app.use('/auth', authRoutes);    // For auth: /auth/register, /auth/login
 
-//----------------------------------------------------------------
+//--------------------------------------------------
 
-app.post('/books', (req, res) => { //Post function to create a book
+app.post('/books', (req, res) => {
   const { isbn, title, price, publication_year, stock, category } = req.body;
-
-  const sql = `
-    INSERT INTO books (isbn, title, price, publication_year, stock, category)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `;
-
+  const sql = `INSERT INTO books (isbn, title, price, publication_year, stock, category) VALUES (?, ?, ?, ?, ?, ?)`;
   const values = [isbn, title, price, publication_year, stock, category];
 
   db.query(sql, values, (err, result) => {
@@ -29,9 +24,7 @@ app.post('/books', (req, res) => { //Post function to create a book
   });
 });
 
-//----------------------------------------------------------------
-
-app.get('/books', (req, res) => { //Read function to list all books
+app.get('/books', (req, res) => {
   const sql = 'SELECT * FROM books';
   db.query(sql, (err, results) => {
     if (err) return res.status(500).json({ error: err });
@@ -39,14 +32,16 @@ app.get('/books', (req, res) => { //Read function to list all books
   });
 });
 
-//----------------------------------------------------------------
+app.put('/books/:id', (req, res) => {
+  const { title, price, stock } = req.body;
+  const sql = `UPDATE books SET title = ?, price = ?, stock = ? WHERE id = ?`;
+  const values = [title, price, stock, req.params.id];
 
-const PORT = process.env.PORT || 3001; //Starting server
-app.listen(PORT, () => {
-  console.log(`📦 Server is running on port ${PORT}`);
+  db.query(sql, values, (err) => {
+    if (err) return res.status(500).json(err);
+    return res.json({ message: "Book updated" });
+  });
 });
-
-//----------------------------------------------------------------
 
 app.delete('/books/:id', (req, res) => {
   const sql = "DELETE FROM books WHERE id = ?";
@@ -56,18 +51,10 @@ app.delete('/books/:id', (req, res) => {
   });
 });
 
-//----------------------------------------------------------------
+//--------------------------------------------------
 
-app.put('/books/:id', (req, res) => {
-  const { title, price, stock } = req.body;
-  const sql = `
-    UPDATE books SET title = ?, price = ?, stock = ? WHERE id = ?
-  `;
-  const values = [title, price, stock, req.params.id];
-
-  db.query(sql, values, (err) => {
-    if (err) return res.status(500).json(err);
-    return res.json({ message: "Book updated" });
-  });
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`📦 Server is running on port ${PORT}`);
 });
 
