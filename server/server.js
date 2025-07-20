@@ -8,6 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(titleSearch); // register the routes from titleSearch.js
+require('dotenv').config();
 
 //----------------------------------------------------------------
 
