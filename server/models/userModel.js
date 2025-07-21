@@ -1,11 +1,17 @@
 const db = require('../db');
 
-const createUser = (user) => {
-  const sql = 'INSERT INTO customers (name, email, phone, address, password) VALUES (?, ?, ?, ?, ?)';
-  return db.promise().execute(sql, [user.name, user.email, user.phone, user.address, user.password]);
+const findUserByEmail = (email, callback) => {
+  db.query('SELECT * FROM customers WHERE email = ?', [email], callback);
 };
 
-const findUserByEmail = (email) => {
-  const sql = 'SELECT * FROM customers WHERE email = ?';
-  return db.promise().execute(sql, [email]);
-}; 
+const createUser = (user, callback) => {
+  const { name, email, phone, address, password } = user;
+  db.query(
+    'INSERT INTO customers (name, email, phone, address, password) VALUES (?, ?, ?, ?, ?)',
+    [name, email, phone, address, password],
+    callback
+  );
+};
+
+module.exports = { findUserByEmail, createUser };
+
