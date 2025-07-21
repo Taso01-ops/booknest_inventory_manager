@@ -104,6 +104,26 @@ app.get('/orders', verifyToken, (req, res) => {
     res.json(results);
   });
 });
+//-------------------- ADMIN LOGIN --------------------
+app.post('/admin/login', (req, res) => {
+  const { username, password } = req.body;
+
+  const sql = 'SELECT * FROM admins WHERE username = ?';
+  db.query(sql, [username], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (results.length === 0) return res.status(401).json({ message: 'Invalid username' });
+
+    const admin = results[0];
+    const bcrypt = require('bcryptjs');
+
+    bcrypt.compare(password, admin.password, (err, isMatch) => {
+      if (err || !isMatch) return res.status(401).json({ message: 'Invalid password' });
+
+      const token = jwt.sign({ id: admin.id, role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.json({ token });
+    });
+  });
+});
 
 // Verify connection to DB
 const PORT = process.env.PORT || 3001;
