@@ -1,43 +1,33 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../db');
+const { createUser, findUserByEmail } = require('../models/userModel');
 
-const register = (req, res) => {
-  const { name, email, password } = req.body;
-
-  // Hash password
-  const saltRounds = 10;
-  bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-    if (err) return res.status(500).json({ error: 'Password encryption failed' });
-
-    const sql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-    db.query(sql, [name, email, hashedPassword], (err, result) => {
-      if (err) return res.status(500).json({ error: 'Registration failed', detail: err });
-      return res.status(201).json({ message: 'User registered' });
-    });
-  });
+const register = async (req, res) => {
+  try {
+    const { name, email, phone, address, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await createUser({ name, email, phone, address, password: hashedPassword });
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-const login = (req, res) => {
-  const { email, password } = req.body;
-  const sql = 'SELECT * FROM users WHERE email = ?';
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const [rows] = await findUserByEmail(email);
+    if (!rows.length) return res.status(401).json({ error: 'Invalid credentials' });
 
-  db.query(sql, [email], (err, results) => {
-    if (err) return res.status(500).json({ error: 'Login failed', detail: err });
-    if (results.length === 0) return res.status(404).json({ error: 'User not found' });
+    const user = rows[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
 
-    const user = results[0];
-    bcrypt.compare(password, user.password, (err, match) => {
-      if (err) return res.status(500).json({ error: 'Password check failed' });
-      if (!match) return res.status(401).json({ error: 'Incorrect password' });
-
-      const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
-      return res.json({ message: 'Login successful', token });
-    });
-  });
+    const token = jwt.sign({ id: user.id, role: 'customer' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 module.exports = { register, login };
- 
