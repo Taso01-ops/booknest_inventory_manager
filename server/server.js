@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const authRoutes = require('./routes/auth');
 const titleSearch = require('./titleSearch');
 const { verifyToken, verifyAdmin } = require('./middleware/verifyToken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors());
