@@ -7,7 +7,7 @@ function verifyToken(req, res, next) {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) return res.status(403).json({ message: 'Failed to authenticate token' });
-    req.user = decoded;
+    req.user = decoded; // Attach decoded payload
     next();
   });
 }
@@ -21,12 +21,13 @@ function verifyAdmin(req, res, next) {
     if (err || decoded.role !== 'admin') {
       return res.status(403).json({ message: 'Access denied. Admins only.' });
     }
-    req.admin = decoded;
+    req.user = decoded; // changed from req.admin to req.user for consistency
     next();
   });
 }
 
 module.exports = { verifyToken, verifyAdmin };
+
 
 
 
