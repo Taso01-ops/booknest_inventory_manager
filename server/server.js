@@ -136,14 +136,15 @@ app.post('/admin/login', (req, res) => {
 
     const admin = results[0];
 
-    bcrypt.compare(password, admin.password, (err, match) => {
-      if (err || !match) return res.status(401).json({ message: 'Invalid credentials' });
+    if (password !== admin.password) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-      const token = jwt.sign({ id: admin.id, role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      res.json({ token });
-    });
+    const token = jwt.sign({ id: admin.id, role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token });
   });
 });
+
 
 // Verify connection to DB
 const PORT = process.env.PORT || 3001;
