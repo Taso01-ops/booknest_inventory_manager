@@ -5,6 +5,7 @@ const db = require('./db');
 const jwt = require('jsonwebtoken');
 const authRoutes = require('./routes/auth');
 const titleSearch = require('./titleSearch');
+const { verifyToken, verifyAdmin } = require('./middleware/verifyToken');
 
 const app = express();
 app.use(cors());
@@ -104,26 +105,37 @@ app.get('/orders', verifyToken, (req, res) => {
     res.json(results);
   });
 });
-//-------------------- ADMIN LOGIN --------------------
-app.post('/admin/login', (req, res) => {
-  const { username, password } = req.body;
 
-  const sql = 'SELECT * FROM admins WHERE username = ?';
-  db.query(sql, [username], (err, results) => {
+//---------------------------------------
+// Admin Routes (require admin token)
+app.post('/admin/books', verifyAdmin, (req, res) => {
+  const { isbn, title, price, publication_year, stock, category } = req.body;
+  const sql = `INSERT INTO books (isbn, title, price, publication_year, stock, category) VALUES (?, ?, ?, ?, ?, ?)`;
+  const values = [isbn, title, price, publication_year, stock, category];
+
+  db.query(sql, values, (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
-    if (results.length === 0) return res.status(401).json({ message: 'Invalid username' });
-
-    const admin = results[0];
-    const bcrypt = require('bcryptjs');
-
-    bcrypt.compare(password, admin.password, (err, isMatch) => {
-      if (err || !isMatch) return res.status(401).json({ message: 'Invalid password' });
-
-      const token = jwt.sign({ id: admin.id, role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      res.json({ token });
-    });
+    res.status(201).json({ message: 'Book added by admin', bookId: result.insertId });
   });
 });
+
+app.put('/admin/books/:id', verifyAdmin, (req, res) => {
+  const { price, stock } = req.body;
+  const sql = `UPDATE books SET price = ?, stock = ? WHERE id = ?`;
+  db.query(sql, [price, stock, req.params.id], (err) => {
+    if (err) return res.status(500).json(err);
+    return res.json({ message: 'Book updated by admin' });
+  });
+});
+
+app.delete('/admin/books/:id', verifyAdmin, (req, res) => {
+  const sql = "DELETE FROM books WHERE id = ?";
+  db.query(sql, [req.params.id], (err) => {
+    if (err) return res.status(500).json(err);
+    return res.json({ message: 'Book deleted by admin' });
+  });
+});
+
 
 // Verify connection to DB
 const PORT = process.env.PORT || 3001;
