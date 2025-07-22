@@ -20,6 +20,15 @@ const Register = ({ setToken }) => {
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       alert('Registration successful!');
+
+      // Optional: Clear form after registration
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        password: ''
+      });
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.error || 'Registration failed');
