@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import BookList from './BookList';  // Ensure proper import of BookList
-import SearchBar from './SearchBar';  // Ensure proper import of SearchBar
-import AddBook from './addBook';  // Corrected import to match file name convention
-import UpdateBook from './updateBook';  // Corrected import to match file name convention
+import BookList from './BookList';  
+import SearchBar from './SearchBar';  
+import AddBook from './addBook';  
+import UpdateBook from './updateBook';  
+import API from './api'; // Add this
 
 const App = () => {
   const [books, setBooks] = useState([]);
@@ -11,6 +12,7 @@ const App = () => {
 
   // Fetch books from the API
   const fetchBooks = async () => {
+    const res = await API.get('/books');
     try {
       const res = await axios.get('http://localhost:3001/books');
       console.log(res.data);  // Log the data to verify it's fetched correctly
