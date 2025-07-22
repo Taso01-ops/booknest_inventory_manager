@@ -7,6 +7,7 @@ import SearchBar from './SearchBar';
 import BookList from './BookList';
 import AddBook from './addBook';
 import UpdateBook from './updateBook';
+import Register from './Register'; 
 
 // Native token parser (no jwt-decode needed)
 function parseJwt(token) {
