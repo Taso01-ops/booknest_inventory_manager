@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
-router.get('/books/search', (req, res) => { //Search from Proj 1
+router.get('/search', (req, res) => { //Search from Proj 1
   const { title, minPrice, maxPrice } = req.query;
 
   if (!title) return res.status(400).json({ error: 'Missing title query' });
