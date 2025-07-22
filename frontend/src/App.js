@@ -8,6 +8,23 @@ import BookList from './BookList';
 import AddBook from './addBook';
 import UpdateBook from './updateBook';
 
+// Native token parser (no jwt-decode needed)
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    return null;
+  }
+}
+
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [role, setRole] = useState(null);
@@ -17,10 +34,10 @@ const App = () => {
   // Decode token to get role
   useEffect(() => {
     if (token) {
-      try {
-        const decoded = jwt_decode(token);
-        setRole(decoded.role || 'user'); // fallback to 'user' if role isn't in token
-      } catch {
+      const decoded = parseJwt(token);
+      if (decoded) {
+        setRole(decoded.role || 'user');
+      } else {
         setRole(null);
       }
     }
@@ -80,4 +97,5 @@ const App = () => {
   );
 };
 
-export Default App;
+export default App;
+
