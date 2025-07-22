@@ -7,21 +7,30 @@ const Cart = ({ cartItems, setCartItems }) => {
     if (!token) return alert('Login required to place order.');
 
     try {
-      await API.post('/orders', {
+      const orderPayload = {
         items: cartItems.map(item => ({
-          book_id: item.id,
+          book_id: item.id, // Correct key for backend
           quantity: item.quantity || 1,
         })),
-      }, {
+      };
+
+      await API.post('/orders', orderPayload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      alert('Order placed successfully!');
-      setCartItems([]); // Clear cart after successful order
+      alert('✅ Order placed successfully!');
+      setCartItems([]); // Clear cart after order
     } catch (err) {
-      console.error(err);
-      alert('Failed to place order');
+      console.error('Order placement failed:', err);
+      alert('❌ Failed to place order. Please try again.');
     }
+  };
+
+  const calculateTotal = () => {
+    return cartItems.reduce((sum, item) => {
+      const quantity = item.quantity || 1;
+      return sum + item.price * quantity;
+    }, 0).toFixed(2);
   };
 
   return (
@@ -34,10 +43,11 @@ const Cart = ({ cartItems, setCartItems }) => {
           <ul>
             {cartItems.map(item => (
               <li key={item.id}>
-                {item.title} - ${item.price} x {item.quantity || 1}
+                {item.title} - ${item.price} × {item.quantity || 1}
               </li>
             ))}
           </ul>
+          <p><strong>Total:</strong> ${calculateTotal()}</p>
           <button onClick={handlePlaceOrder} disabled={cartItems.length === 0}>
             Place Order
           </button>
