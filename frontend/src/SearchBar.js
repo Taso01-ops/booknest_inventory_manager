@@ -7,15 +7,19 @@ const SearchBar = ({ setBooks }) => {
   const [maxPrice, setMaxPrice] = useState('');
 
   const handleSearch = async () => {
+    if (!searchTerm && !minPrice && !maxPrice) {
+      alert("Please enter a title or price range to search.");
+      return;
+    }
+
     try {
       const params = {
-        title: searchTerm,
+        ...(searchTerm && { title: searchTerm }),
         ...(minPrice && { minPrice }),
-        ...(maxPrice && { maxPrice })
+        ...(maxPrice && { maxPrice }),
       };
 
       const response = await API.get('/books/search', { params });
-      console.log("Search Results:", response.data);
       setBooks(response.data);
     } catch (error) {
       console.error('Error searching books:', error);
@@ -49,3 +53,4 @@ const SearchBar = ({ setBooks }) => {
 };
 
 export default SearchBar;
+
