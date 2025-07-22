@@ -13,7 +13,18 @@ const OrderHistory = () => {
         const res = await API.get('/orders', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setOrders(res.data);
+
+        // Group by order ID
+        const grouped = res.data.reduce((acc, item) => {
+          const { id, order_date, title, quantity, price } = item;
+          if (!acc[id]) {
+            acc[id] = { order_date, items: [] };
+          }
+          acc[id].items.push({ title, quantity, price });
+          return acc;
+        }, {});
+
+        setOrders(grouped);
       } catch (err) {
         console.error(err);
       }
@@ -25,16 +36,21 @@ const OrderHistory = () => {
   return (
     <div>
       <h2>Your Orders</h2>
-      {orders.length === 0 ? (
+      {Object.keys(orders).length === 0 ? (
         <p>No past orders found.</p>
       ) : (
-        <ul>
-          {orders.map((o, index) => (
-            <li key={index}>
-              {o.order_date.split('T')[0]} - {o.title} x {o.quantity} @ ${o.price}
-            </li>
-          ))}
-        </ul>
+        Object.entries(orders).map(([orderId, order]) => (
+          <div key={orderId}>
+            <h4>Order #{orderId} ({order.order_date.split('T')[0]})</h4>
+            <ul>
+              {order.items.map((item, i) => (
+                <li key={i}>
+                  {item.title} x {item.quantity} @ ${item.price}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
       )}
     </div>
   );
