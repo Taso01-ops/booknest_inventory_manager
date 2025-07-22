@@ -11,45 +11,49 @@ const bcrypt = require('bcryptjs');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(titleSearch);
+
 app.use('/auth', authRoutes);
+app.use('/books', titleSearch); 
+
 //---------------------------------------
-app.post('/books', (req, res) => { //Add a new book
+app.post('/books', (req, res) => {
   const { isbn, title, price, publication_year, stock, category } = req.body;
-  const sql = `INSERT INTO books (isbn, title, price, publication_year, stock, category) VALUES (?, ?, ?, ?, ?, ?)`; //SQL query to add books
+  const sql = `INSERT INTO books (isbn, title, price, publication_year, stock, category) VALUES (?, ?, ?, ?, ?, ?)`;
   db.query(sql, [isbn, title, price, publication_year, stock, category], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     res.status(201).json({ message: 'Book added successfully', bookId: result.insertId });
   });
 });
+
 //---------------------------------------
-app.get('/books', (req, res) => { //List ALL books
-  db.query('SELECT * FROM books', (err, results) => { //SQL query to list all books
+app.get('/books', (req, res) => {
+  db.query('SELECT * FROM books', (err, results) => {
     if (err) return res.status(500).json({ error: err });
     res.json(results);
   });
 });
+
 //---------------------------------------
-app.put('/books/:id', (req, res) => { //Update/Edit Books
+app.put('/books/:id', (req, res) => {
   const { title, price, stock } = req.body;
-  const sql = `UPDATE books SET title = ?, price = ?, stock = ? WHERE id = ?`; //SQL query to update
+  const sql = `UPDATE books SET title = ?, price = ?, stock = ? WHERE id = ?`;
   db.query(sql, [title, price, stock, req.params.id], (err) => {
     if (err) return res.status(500).json(err);
     return res.json({ message: 'Book updated' });
   });
 });
+
 //---------------------------------------
-app.delete('/books/:id', (req, res) => { //Remove a book
-  db.query("DELETE FROM books WHERE id = ?", [req.params.id], (err) => { //SQL query to delete
+app.delete('/books/:id', (req, res) => {
+  db.query("DELETE FROM books WHERE id = ?", [req.params.id], (err) => {
     if (err) return res.status(500).json(err);
     return res.json({ message: 'Book deleted' });
   });
 });
 
 //---------------------------------------
-
 app.post('/orders', verifyToken, (req, res) => {
-  const { items } = req.body; // [{ bookId: 1, quantity: 2 }, ...]
+  const { items } = req.body;
   const userId = req.user.id;
 
   const insertOrderSql = 'INSERT INTO orders (customer_id, order_date) VALUES (?, NOW())';
@@ -63,7 +67,6 @@ app.post('/orders', verifyToken, (req, res) => {
     db.query(insertItemsSql, [itemValues], (err) => {
       if (err) return res.status(500).json({ error: err.message });
 
-      // Deduct stock
       const updates = items.map(i => {
         return new Promise((resolve, reject) => {
           db.query('UPDATE books SET stock = stock - ? WHERE id = ?', [i.quantity, i.bookId], (err) => {
@@ -98,7 +101,7 @@ app.get('/orders', verifyToken, (req, res) => {
 });
 
 //---------------------------------------
-// Admin Routes (require admin token)
+// Admin Routes
 app.post('/admin/books', verifyAdmin, (req, res) => {
   const { isbn, title, price, publication_year, stock, category } = req.body;
   const sql = `INSERT INTO books (isbn, title, price, publication_year, stock, category) VALUES (?, ?, ?, ?, ?, ?)`;
@@ -145,10 +148,9 @@ app.post('/admin/login', (req, res) => {
   });
 });
 
-
-// Verify connection to DB
+//---------------------------------------
+// Start the server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`📦 Server is running on port ${PORT}`);
 });
-
