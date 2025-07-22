@@ -56,6 +56,7 @@ const App = () => {
   if (role === 'admin') return <AdminDashboard onLogout={logout} />;
 
   // Regular user view
+    // Regular user view
   return (
     <div>
       <h1>📚 Book Inventory (User View)</h1>
@@ -75,5 +76,8 @@ const App = () => {
             }}
           />
           <button onClick={() => setEditingBook(null)}>Cancel Edit</button>
-
-
+        </div>
+      )}
+    </div>
+  );
+};
