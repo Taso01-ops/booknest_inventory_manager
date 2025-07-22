@@ -1,23 +1,18 @@
 const db = require('../db');
 
-exports.createOrder = (userId, items, callback) => {
+// Create new order
+exports.createOrder = (customerId, items, callback) => {
   const date = new Date();
 
   db.query(
     'INSERT INTO orders (customer_id, order_date) VALUES (?, ?)',
-    [userId, date],
+    [customerId, date],
     (err, result) => {
       if (err) return callback(err);
 
       const orderId = result.insertId;
 
-      const values = items
-        .filter(item => item.book_id && item.quantity)
-        .map(item => [orderId, item.book_id, item.quantity]);
-
-      if (values.length === 0) {
-        return callback(new Error('No valid items to insert.'));
-      }
+      const values = items.map(item => [orderId, item.book_id, item.quantity]);
 
       db.query(
         'INSERT INTO order_items (order_id, book_id, quantity) VALUES ?',
@@ -25,16 +20,15 @@ exports.createOrder = (userId, items, callback) => {
         (err2) => {
           if (err2) return callback(err2);
 
-          // Step 4: Reduce stock for each item
-          const updateTasks = values.map(([_, bookId, qty]) => {
+          const stockUpdates = items.map(item => {
             return new Promise((resolve, reject) => {
               db.query(
                 'UPDATE books SET stock = stock - ? WHERE id = ? AND stock >= ?',
-                [qty, bookId, qty],
+                [item.quantity, item.book_id, item.quantity],
                 (err3, result3) => {
                   if (err3) return reject(err3);
                   if (result3.affectedRows === 0) {
-                    return reject(new Error(`Insufficient stock for book ID ${bookId}`));
+                    return reject(new Error(`Insufficient stock for book ID ${item.book_id}`));
                   }
                   resolve();
                 }
@@ -42,7 +36,7 @@ exports.createOrder = (userId, items, callback) => {
             });
           });
 
-          Promise.all(updateTasks)
+          Promise.all(stockUpdates)
             .then(() => callback(null))
             .catch(callback);
         }
@@ -51,6 +45,7 @@ exports.createOrder = (userId, items, callback) => {
   );
 };
 
+// Get all orders for customer
 exports.getOrdersByCustomerId = (customerId, callback) => {
   db.query(
     `
@@ -60,9 +55,8 @@ exports.getOrdersByCustomerId = (customerId, callback) => {
     JOIN books b ON oi.book_id = b.id
     WHERE o.customer_id = ?
     ORDER BY o.order_date DESC
-  `,
+    `,
     [customerId],
     callback
   );
 };
-
