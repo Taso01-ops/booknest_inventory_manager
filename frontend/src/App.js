@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 
 import Login from './Login';
 import AdminDashboard from './AdminDashboard';
@@ -56,7 +55,6 @@ const App = () => {
   if (role === 'admin') return <AdminDashboard onLogout={logout} />;
 
   // Regular user view
-    // Regular user view
   return (
     <div>
       <h1>📚 Book Inventory (User View)</h1>
