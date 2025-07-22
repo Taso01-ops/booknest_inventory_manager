@@ -79,3 +79,5 @@ const App = () => {
     </div>
   );
 };
+
+export Default App;
