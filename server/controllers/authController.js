@@ -21,7 +21,7 @@ exports.register = (req, res) => {
       if (err) return res.status(500).json(err);
 
       const userId = result.insertId;
-      const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ userId, role: 'user' }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       res.status(201).json({ message: "User registered", token });
     });
@@ -43,9 +43,7 @@ exports.login = (req, res) => {
 
     if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id, role: 'user' }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ message: "Login successful", token });
   });
 };
-
-
