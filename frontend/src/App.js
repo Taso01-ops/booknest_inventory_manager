@@ -74,6 +74,6 @@ const App = () => {
               fetchBooks();
             }}
           />
-          <button onClick={() => setEditingBook(null)}>Cancel Ed
+          <button onClick={() => setEditingBook(null)}>Cancel Edit</button>
 
 
