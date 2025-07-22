@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import Login from './Login';
+import Register from './Register'; 
 import AdminDashboard from './AdminDashboard';
 import SearchBar from './SearchBar';
 import BookList from './BookList';
 import AddBook from './addBook';
 import UpdateBook from './updateBook';
-import Register from './Register'; 
 
-// Native token parser (no jwt-decode needed)
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
@@ -31,13 +30,13 @@ const App = () => {
   const [role, setRole] = useState(null);
   const [books, setBooks] = useState([]);
   const [editingBook, setEditingBook] = useState(null);
+  const [showRegister, setShowRegister] = useState(false); 
 
-  // Decode token to get role
   useEffect(() => {
     if (token) {
       const decoded = parseJwt(token);
       if (decoded) {
-        setRole(decoded.role || 'user');
+        setRole(decoded.role || 'user'); // Default to 'user'
       } else {
         setRole(null);
       }
@@ -50,7 +49,6 @@ const App = () => {
     setRole(null);
   };
 
-  // Fetch books for regular users
   const fetchBooks = async () => {
     try {
       const res = await axios.get('http://localhost:3001/books');
@@ -66,13 +64,34 @@ const App = () => {
     }
   }, [role]);
 
-  // No token? Show login
-  if (!token) return <Login setToken={setToken} />;
+  if (!token) {
+    return (
+      <div>
+        {showRegister ? (
+          <>
+            <Register setToken={setToken} />
+            <p>
+              Already have an account?{' '}
+              <button onClick={() => setShowRegister(false)}>Login</button>
+            </p>
+          </>
+        ) : (
+          <>
+            <Login setToken={setToken} />
+            <p>
+              Don’t have an account?{' '}
+              <button onClick={() => setShowRegister(true)}>Register</button>
+            </p>
+          </>
+        )}
+      </div>
+    );
+  }
 
-  // Admin? Show Admin Dashboard
+
   if (role === 'admin') return <AdminDashboard onLogout={logout} />;
 
-  // Regular user view
+  // Customer view
   return (
     <div>
       <h1>📚 Book Inventory (User View)</h1>
@@ -99,4 +118,3 @@ const App = () => {
 };
 
 export default App;
-
