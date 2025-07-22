@@ -14,17 +14,17 @@ const App = () => {
   const [books, setBooks] = useState([]);
   const [editingBook, setEditingBook] = useState(null);
 
-  // // Decode token to get role
-  // useEffect(() => {
-  //   if (token) {
-  //     try {
-  //       const decoded = jwt_decode(token);
-  //       setRole(decoded.role || 'user'); // fallback to 'user' if role isn't in token
-  //     } catch {
-  //       setRole(null);
-  //     }
-  //   }
-  // }, [token]);
+  // Decode token to get role
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwt_decode(token);
+        setRole(decoded.role || 'user'); // fallback to 'user' if role isn't in token
+      } catch {
+        setRole(null);
+      }
+    }
+  }, [token]);
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -79,3 +79,5 @@ const App = () => {
     </div>
   );
 };
+
+export Default App;
