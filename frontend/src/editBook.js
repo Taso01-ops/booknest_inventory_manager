@@ -1,6 +1,5 @@
-// edit book 
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from './api';
 
 function EditBook({ book, onSuccess }) {
   const [form, setForm] = useState(book);
@@ -11,7 +10,7 @@ function EditBook({ book, onSuccess }) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    axios.put(`http://localhost:3001/books/${book.id}`, form).then(() => {
+    API.put(`/books/${book.id}`, form).then(() => {
       alert('Book updated');
       onSuccess?.();
     });
@@ -28,3 +27,4 @@ function EditBook({ book, onSuccess }) {
 }
 
 export default EditBook;
+
