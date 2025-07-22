@@ -1,18 +1,12 @@
 import React from 'react';
 import DeleteButton from './DeleteButton';
-import axios from 'axios';
+import API from './api'; // replace axios with API
 
-const BookList = ({ books, setBooks, onEdit }) => {  // Add onEdit as a prop
+const BookList = ({ books, setBooks, onEdit }) => {
   const handleDelete = (id) => {
-    axios
-      .delete(`http://localhost:3001/books/${id}`)
-      .then(() => {
-        // Remove the deleted book from the state
-        setBooks(books.filter((book) => book.id !== id));
-      })
-      .catch((error) => {
-        console.error('Error deleting book:', error);
-      });
+    API.delete(`/books/${id}`)
+      .then(() => setBooks(books.filter((book) => book.id !== id)))
+      .catch((error) => console.error('Error deleting book:', error));
   };
 
   return (
@@ -21,7 +15,7 @@ const BookList = ({ books, setBooks, onEdit }) => {  // Add onEdit as a prop
         <li key={book.id}>
           {book.title} ({book.isbn}) - ${book.price}
           <DeleteButton onDelete={() => handleDelete(book.id)} />
-          <button onClick={() => onEdit(book)}>Edit</button>  {/* Use onEdit prop */}
+          <button onClick={() => onEdit(book)}>Edit</button>
         </li>
       ))}
     </ul>
@@ -29,5 +23,6 @@ const BookList = ({ books, setBooks, onEdit }) => {  // Add onEdit as a prop
 };
 
 export default BookList;
+
 
 
