@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { findUserByEmail, createUser } = require('../models/userModel');
 
+// Register a new user
 exports.register = (req, res) => {
   const { name, email, phone, address, password } = req.body;
 
@@ -15,7 +16,7 @@ exports.register = (req, res) => {
       return res.status(409).json({ error: "User already exists" });
     }
 
-    // Store password as-is (plain text)
+    // Store password as plain text (only for school use)
     createUser({ name, email, phone, address, password }, (err, result) => {
       if (err) return res.status(500).json(err);
 
@@ -27,6 +28,7 @@ exports.register = (req, res) => {
   });
 };
 
+// User login
 exports.login = (req, res) => {
   const { email, password } = req.body;
 
@@ -34,12 +36,11 @@ exports.login = (req, res) => {
 
   findUserByEmail(email, (err, users) => {
     if (err) return res.status(500).json({ error: err.message });
-
     if (users.length === 0) return res.status(401).json({ error: "User not found" });
 
     const user = users[0];
 
-    // Compare plain text passwords
+    // Plain text password comparison
     if (password !== user.password) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -48,4 +49,3 @@ exports.login = (req, res) => {
     res.json({ message: "Login successful", token });
   });
 };
-
