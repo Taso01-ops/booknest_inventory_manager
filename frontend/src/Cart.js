@@ -9,7 +9,7 @@ const Cart = ({ cartItems, setCartItems }) => {
     try {
       await API.post('/orders', {
         items: cartItems.map(item => ({
-          bookId: item.id,
+          book_id: item.id,
           quantity: item.quantity || 1,
         })),
       }, {
@@ -17,7 +17,7 @@ const Cart = ({ cartItems, setCartItems }) => {
       });
 
       alert('Order placed successfully!');
-      setCartItems([]); // Clear cart
+      setCartItems([]); // Clear cart after successful order
     } catch (err) {
       console.error(err);
       alert('Failed to place order');
@@ -30,17 +30,19 @@ const Cart = ({ cartItems, setCartItems }) => {
       {cartItems.length === 0 ? (
         <p>No items in cart.</p>
       ) : (
-        <ul>
-          {cartItems.map(item => (
-            <li key={item.id}>
-              {item.title} - ${item.price} x {item.quantity || 1}
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul>
+            {cartItems.map(item => (
+              <li key={item.id}>
+                {item.title} - ${item.price} x {item.quantity || 1}
+              </li>
+            ))}
+          </ul>
+          <button onClick={handlePlaceOrder} disabled={cartItems.length === 0}>
+            Place Order
+          </button>
+        </>
       )}
-      <button onClick={handlePlaceOrder} disabled={cartItems.length === 0}>
-        Place Order
-      </button>
     </div>
   );
 };
