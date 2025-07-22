@@ -1,21 +1,18 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from './api';
 
 const SearchBar = ({ setBooks }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-const handleSearch = async () => {
-  try {
-    const response = await axios.get('http://localhost:3001/books/search', {
-      params: { title: searchTerm }
-    });
-    console.log("Search Results:", response.data); //Log to detect issues
-    setBooks(response.data);
-  } catch (error) {
-    console.error('Error searching books:', error);
-  }
-};
-
+  const handleSearch = async () => {
+    try {
+      const response = await API.get(`/books/search/${searchTerm}`);
+      console.log("Search Results:", response.data);
+      setBooks(response.data);
+    } catch (error) {
+      console.error('Error searching books:', error);
+    }
+  };
 
   return (
     <div>
