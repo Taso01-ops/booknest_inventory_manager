@@ -4,12 +4,17 @@ exports.createOrder = (userId, items, callback) => {
   const date = new Date();
   db.query('INSERT INTO orders (customer_id, order_date) VALUES (?, ?)', [userId, date], (err, result) => {
     if (err) return callback(err);
+
     const orderId = result.insertId;
 
     const values = items.map(item => [orderId, item.book_id, item.quantity]);
+
+    console.log('Inserting order_items:', values); // DEBUG
+
     db.query('INSERT INTO order_items (order_id, book_id, quantity) VALUES ?', [values], callback);
   });
 };
+
 
 exports.getOrdersByCustomerId = (customerId, callback) => {
   db.query(`
