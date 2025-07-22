@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const Login = ({ setToken }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
 
   const handleLogin = async () => {
     const endpoint = isAdmin ? '/admin/login' : '/auth/login';
     try {
-      const res = await axios.post(`http://localhost:3001${endpoint}`, { username, password });
+      const res = await axios.post(`http://localhost:3001${endpoint}`, { email, password });
       localStorage.setItem('token', res.data.token);
       setToken(res.data.token);
       alert('Login successful!');
@@ -22,7 +22,7 @@ const Login = ({ setToken }) => {
   return (
     <div>
       <h2>{isAdmin ? 'Admin' : 'User'} Login</h2>
-      <input placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
+      <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
       <input placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)} />
       <label>
         <input type="checkbox" checked={isAdmin} onChange={() => setIsAdmin(!isAdmin)} />
