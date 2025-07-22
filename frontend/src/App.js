@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import Login from './Login';
-import Register from './Register'; 
+import Register from './Register';
 import AdminDashboard from './AdminDashboard';
 import SearchBar from './SearchBar';
 import BookList from './BookList';
 import AddBook from './addBook';
 import UpdateBook from './updateBook';
+import Cart from './Cart';
+import OrderHistory from './OrderHistory';
 
 function parseJwt(token) {
   try {
@@ -30,13 +31,15 @@ const App = () => {
   const [role, setRole] = useState(null);
   const [books, setBooks] = useState([]);
   const [editingBook, setEditingBook] = useState(null);
-  const [showRegister, setShowRegister] = useState(false); 
+  const [showRegister, setShowRegister] = useState(false);
+  const [view, setView] = useState('books'); // 'books', 'cart', 'orders'
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     if (token) {
       const decoded = parseJwt(token);
       if (decoded) {
-        setRole(decoded.role || 'user'); // Default to 'user'
+        setRole(decoded.role || 'user');
       } else {
         setRole(null);
       }
@@ -64,6 +67,21 @@ const App = () => {
     }
   }, [role]);
 
+  const addToCart = (book) => {
+    const exists = cartItems.find((item) => item.id === book.id);
+    if (exists) {
+      setCartItems(
+        cartItems.map((item) =>
+          item.id === book.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      );
+    } else {
+      setCartItems([...cartItems, { ...book, quantity: 1 }]);
+    }
+  };
+
   if (!token) {
     return (
       <div>
@@ -88,18 +106,34 @@ const App = () => {
     );
   }
 
-
   if (role === 'admin') return <AdminDashboard onLogout={logout} />;
 
   // Customer view
   return (
     <div>
-      <h1>📚 Book Inventory (User View)</h1>
+      <h1>📚 Book Store (Customer View)</h1>
       <button onClick={logout}>Logout</button>
+      <button onClick={() => setView('books')}>Browse Books</button>
+      <button onClick={() => setView('cart')}>View Cart ({cartItems.length})</button>
+      <button onClick={() => setView('orders')}>Order History</button>
 
-      <SearchBar setBooks={setBooks} />
-      <BookList books={books} setBooks={setBooks} onEdit={setEditingBook} />
-      <AddBook onSuccess={fetchBooks} />
+      {view === 'books' && (
+        <>
+          <SearchBar setBooks={setBooks} />
+          <BookList
+            books={books}
+            setBooks={setBooks}
+            onEdit={setEditingBook}
+            addToCart={addToCart}
+          />
+        </>
+      )}
+
+      {view === 'cart' && (
+        <Cart cartItems={cartItems} setCartItems={setCartItems} />
+      )}
+
+      {view === 'orders' && <OrderHistory />}
 
       {editingBook && (
         <div>
