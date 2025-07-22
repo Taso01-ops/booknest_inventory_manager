@@ -24,10 +24,11 @@ router.get('/search', (req, res) => {
   }
 
   db.query(sql, params, (err, results) => {
-    if (err) return res.status(500).json(err);
-    return res.json(results);
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
   });
 });
 
 module.exports = router;
+
 
