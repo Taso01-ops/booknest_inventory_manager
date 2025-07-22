@@ -2,15 +2,18 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db');
 
-router.get('/search', (req, res) => { //Search from Proj 1
+router.get('/search', (req, res) => {
   const { title, minPrice, maxPrice } = req.query;
 
-  if (!title) return res.status(400).json({ error: 'Missing title query' });
+  let sql = "SELECT * FROM books WHERE 1=1";
+  const params = [];
 
-  let sql = "SELECT * FROM books WHERE LOWER(title) LIKE LOWER(?)";
-  const params = [`%${title}%`];
+  if (title) {
+    sql += " AND LOWER(title) LIKE LOWER(?)";
+    params.push(`%${title}%`);
+  }
 
-  if (minPrice) { //Price range for proj 2
+  if (minPrice) {
     sql += " AND price >= ?";
     params.push(minPrice);
   }
@@ -27,3 +30,4 @@ router.get('/search', (req, res) => { //Search from Proj 1
 });
 
 module.exports = router;
+
