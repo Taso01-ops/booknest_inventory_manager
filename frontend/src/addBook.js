@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from './api';
 
 function AddBook({ onSuccess }) {
   const [book, setBook] = useState({
@@ -10,7 +10,7 @@ function AddBook({ onSuccess }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3001/books', book).then(() => {
+    API.post('/books', book).then(() => {
       alert('Book added');
       onSuccess?.();
     });
@@ -27,4 +27,5 @@ function AddBook({ onSuccess }) {
 }
 
 export default AddBook;
+
 
