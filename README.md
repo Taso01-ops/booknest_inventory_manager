@@ -18,8 +18,6 @@
 - **Customer Login** – Login using email and password.
 - **Browse Book Catalog** – View all available books (title, price, stock).
 - **Search Books** – Filter books by title or price range.
-- **Place Orders** – Select books, specify quantity, and place an order (with stock deduction).
-- **View Order History** – Display past orders of the logged-in customer.
 
 ---
 
