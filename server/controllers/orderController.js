@@ -1,9 +1,10 @@
 const db = require('../db');
 
+// Place a new order
 exports.placeOrder = (req, res) => {
   console.log('📦 New order request received');
 
-  const customerId = req.user?.userId;
+  const customerId = req.user?.id; // ✅ FIXED: previously req.user.userId
   const items = req.body.items;
 
   if (!customerId) {
@@ -18,7 +19,7 @@ exports.placeOrder = (req, res) => {
 
   const orderDate = new Date();
 
-  // Step 1: Create order
+  // Step 1: Insert into orders
   db.query(
     'INSERT INTO orders (customer_id, order_date) VALUES (?, ?)',
     [customerId, orderDate],
@@ -73,8 +74,9 @@ exports.placeOrder = (req, res) => {
   );
 };
 
+// Get past orders for a customer
 exports.getOrderHistory = (req, res) => {
-  const customerId = req.user?.userId;
+  const customerId = req.user?.id; // ✅ FIXED
 
   if (!customerId) {
     return res.status(401).json({ message: 'Unauthorized: No user ID found' });
@@ -82,7 +84,7 @@ exports.getOrderHistory = (req, res) => {
 
   db.query(
     `
-    SELECT o.id AS order_id, o.order_date, b.title, b.price, oi.quantity
+    SELECT o.id, o.order_date, b.title, b.price, oi.quantity
     FROM orders o
     JOIN order_items oi ON o.id = oi.order_id
     JOIN books b ON oi.book_id = b.id
@@ -96,7 +98,7 @@ exports.getOrderHistory = (req, res) => {
         return res.status(500).json({ message: 'Failed to fetch orders', error: err.message });
       }
 
-      res.status(200).json({ orders: results });
+      res.status(200).json(results); // ✅ flat array expected by frontend
     }
   );
 };
