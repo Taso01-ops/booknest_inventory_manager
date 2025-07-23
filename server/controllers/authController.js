@@ -18,8 +18,8 @@ exports.register = (req, res) => {
     createUser({ name, email, phone, address, password }, (err, result) => {
       if (err) return res.status(500).json({ error: "Registration failed", details: err });
 
-      const userId = result.insertId;
-      const token = jwt.sign({ userId, role: 'user' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const id = result.insertId;
+      const token = jwt.sign({ id, role: 'user' }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       res.status(201).json({ message: "User registered", token });
     });
@@ -42,7 +42,8 @@ exports.login = (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ userId: user.id, role: 'user' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, role: 'user' }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ message: "Login successful", token });
   });
 };
+
